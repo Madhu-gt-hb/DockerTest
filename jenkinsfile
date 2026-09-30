@@ -1,0 +1,26 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Configure') {
+            steps {
+                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/Madhu-gt-hb/DockerTest.git']])
+            }
+        }
+        stage('Building image') {
+            steps {
+                sh 'docker build -t springapp .'
+            }
+        }
+
+        stage('Pushing to ECR') {
+            steps {
+                withAWS(credentials: 'AWS CREDS', region: 'ap-south-2') {
+                    sh 'aws ecr get-login-password --region ap-south-2 | docker login --username AWS --password-stdin 578257747988.dkr.ecr.ap-south-2.amazonaws.com'
+                    sh 'docker tag springapp:latest 578257747988.dkr.ecr.ap-south-2.amazonaws.com/springapp:latest'
+                    sh 'docker push 578257747988.dkr.ecr.ap-south-2.amazonaws.com/springapp:latest'
+                }
+            }
+		}
+	}
+}
