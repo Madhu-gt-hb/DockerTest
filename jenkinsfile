@@ -32,7 +32,7 @@ pipeline {
                     sh '''
                         aws ecs update-service \
                         --cluster arn:aws:ecs:ap-south-2:578257747988:cluster/DockEcs \
-                        --service arn:aws:ecs:ap-south-2:578257747988:service/DockEcs/DockService \
+                        --service arn:aws:ecs:ap-south-2:578257747988:service/DockEcs/ServiceTest \
                         --force-new-deployment
                     '''
                 }
