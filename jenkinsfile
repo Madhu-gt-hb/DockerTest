@@ -17,10 +17,26 @@ pipeline {
             steps {
                 withAWS(credentials: 'AWS CREDS', region: 'ap-south-2') {
                     sh 'aws ecr get-login-password --region ap-south-2 | docker login --username AWS --password-stdin 578257747988.dkr.ecr.ap-south-2.amazonaws.com'
-                    sh 'docker tag springapp:latest 578257747988.dkr.ecr.ap-south-2.amazonaws.com/spring:latest'
-                    sh 'docker push 578257747988.dkr.ecr.ap-south-2.amazonaws.com/spring:latest'
+                    sh 'docker tag springapp:latest 578257747988.dkr.ecr.ap-south-2.amazonaws.com/sampletest:1'
+                    sh 'docker push 578257747988.dkr.ecr.ap-south-2.amazonaws.com/sampletest:1'
                 }
             }
 		}
+       stage('Deploy to ECS') {
+            steps {
+                withAWS(
+                    credentials: 'AWS CREDS',
+                    region: "ap-south-2"
+                ) {
+
+                    sh '''
+                        aws ecs update-service \
+                        --cluster arn:aws:ecs:ap-south-2:578257747988:cluster/DockEcs \
+                        --service arn:aws:ecs:ap-south-2:578257747988:service/DockEcs/DockService \
+                        --force-new-deployment
+                    '''
+                }
+            }
 	}
+}
 }
