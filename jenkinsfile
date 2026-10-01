@@ -9,7 +9,7 @@ pipeline {
         }
         stage('Building image') {
             steps {
-                sh 'docker build -t spring .'
+                sh 'docker build -t sampletest .'
             }
         }
 
